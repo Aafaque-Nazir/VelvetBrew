@@ -46,7 +46,7 @@ export default function AccessoriesPage() {
                         
                         <div className="p-5 border-t border-white/5 flex flex-col items-center text-center flex-1 justify-between bg-[#151515]">
                             <h3 className="text-white font-bold mb-2 text-sm">{item.name}</h3>
-                            <p className="text-bronze-500 font-bold">₹{item.price.toLocaleString()}</p>
+                            <p className="text-bronze-500 font-bold">₹{item.price.toLocaleString('en-IN')}</p>
                         </div>
                     </Link>
                 </motion.div>

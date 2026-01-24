@@ -43,7 +43,7 @@ export default function ProductInfo({ product, onColorChange }) {
           <span className="text-white/40">128 Reviews</span>
         </div>
         <p className="text-2xl font-light text-bronze-500">
-          ₹{product.price.toLocaleString()}
+          ₹{product.price.toLocaleString("en-IN")}
         </p>
       </div>
 

@@ -51,7 +51,7 @@ export default function BeansPage() {
                                     <span className="text-[10px] font-bold text-bronze-500 uppercase tracking-widest">{item.roast}</span>
                                     <h3 className="text-xl text-white font-bold mt-1">{item.name}</h3>
                                 </div>
-                                <span className="text-white font-bold text-lg">₹{item.price.toLocaleString()}</span>
+                                <span className="text-white font-bold text-lg">₹{item.price.toLocaleString('en-IN')}</span>
                             </div>
                             
                             <p className="text-sm text-white/50 mb-6 flex-1">{item.notes}</p>

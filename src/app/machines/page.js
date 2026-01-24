@@ -90,7 +90,7 @@ export default function MachinesPage() {
                             <h3 className="text-2xl text-white font-bold mb-1">{item.name}</h3>
                             <p className="text-white/50 text-sm">{item.tagline}</p>
                         </div>
-                        <p className="text-xl font-bold text-bronze-500">₹{item.price.toLocaleString()}</p>
+                        <p className="text-xl font-bold text-bronze-500">₹{item.price.toLocaleString('en-IN')}</p>
                     </div>
                 </motion.div>
             ))}

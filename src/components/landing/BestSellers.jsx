@@ -1,5 +1,4 @@
-"use client";
-import { motion } from "framer-motion";
+// No change needed for BestSellers as it uses static strings.
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";

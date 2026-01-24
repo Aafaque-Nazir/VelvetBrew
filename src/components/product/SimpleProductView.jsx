@@ -33,7 +33,7 @@ export default function SimpleProductView({ product }) {
                 {product.name}
               </h1>
               <p className="text-2xl text-bronze-500 font-light">
-                ₹{product.price.toLocaleString()}
+                ₹{product.price.toLocaleString("en-IN")}
               </p>
             </div>
 
