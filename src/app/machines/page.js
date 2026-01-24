@@ -79,9 +79,9 @@ export default function MachinesPage() {
                          </div>
                         
                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                            <Button className="rounded-full shadow-2xl">
+                            <span className="bg-white text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl">
                                 View Details
-                            </Button>
+                            </span>
                         </div>
                     </Link>
                     

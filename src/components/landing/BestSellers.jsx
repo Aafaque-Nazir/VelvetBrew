@@ -40,10 +40,11 @@ export default function BestSellers() {
             </h2>
             <p className="text-white/60">Curated for the uncompromising.</p>
           </div>
-          <Link href="/machines">
-            <Button variant="link" className="hidden md:block">
-              View All Machines &rarr;
-            </Button>
+          <Link
+            href="/machines"
+            className="hidden md:block text-white hover:text-bronze-500 transition-colors"
+          >
+            View All Machines &rarr;
           </Link>
         </div>
 
@@ -54,8 +55,11 @@ export default function BestSellers() {
         </div>
 
         <div className="mt-12 text-center md:hidden">
-          <Link href="/machines">
-            <Button variant="outline">View All Machines</Button>
+          <Link
+            href="/machines"
+            className="inline-flex h-10 items-center justify-center rounded-md border border-white/20 bg-transparent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 focus:outline-none"
+          >
+            View All Machines
           </Link>
         </div>
       </div>

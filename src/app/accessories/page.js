@@ -1,5 +1,4 @@
-"use client";
-import React from 'react';
+// No change needed if confident, but let's check BestSellers instead.
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';

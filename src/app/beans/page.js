@@ -56,7 +56,9 @@ export default function BeansPage() {
                             
                             <p className="text-sm text-white/50 mb-6 flex-1">{item.notes}</p>
                             
-                            <Button className="w-full rounded-xl pointer-events-none">View Details</Button>
+                            <div className="w-full bg-white/10 text-white text-center py-3 rounded-xl font-medium text-sm group-hover:bg-white/20 transition-colors">
+                                View Details
+                            </div>
                         </div>
                     </Link>
                 </motion.div>
