@@ -140,11 +140,8 @@ function ProfileTab({ session }) {
 }
 
 function OrdersTab() {
-    // Mock orders
-    const orders = [
-        { id: '#VB9281', date: 'Jan 24, 2026', status: 'Processing', total: 101799, items: 'The Obsidian Project, Beans (x2)' },
-        { id: '#VB8110', date: 'Dec 12, 2025', status: 'Delivered', total: 4499, items: 'Pro Knock Box' },
-    ];
+    // In a real app, fetch orders from API
+    const orders = []; 
 
     return (
         <div className="space-y-8">
@@ -154,24 +151,35 @@ function OrdersTab() {
             </div>
 
             <div className="space-y-4">
-                {orders.map((order) => (
-                    <div key={order.id} className="bg-black/20 rounded-xl p-6 border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-bronze-500/30 transition-colors">
-                        <div>
-                             <div className="flex items-center gap-3 mb-1">
-                                <span className="text-white font-bold">{order.id}</span>
-                                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${order.status === 'Delivered' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'}`}>
-                                    {order.status}
-                                </span>
-                             </div>
-                             <p className="text-sm text-white/40">{order.items}</p>
-                             <p className="text-xs text-white/30 mt-1">{order.date}</p>
+                {orders.length > 0 ? (
+                    orders.map((order) => (
+                        <div key={order.id} className="bg-black/20 rounded-xl p-6 border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-bronze-500/30 transition-colors">
+                            <div>
+                                 <div className="flex items-center gap-3 mb-1">
+                                    <span className="text-white font-bold">{order.id}</span>
+                                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${order.status === 'Delivered' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'}`}>
+                                        {order.status}
+                                    </span>
+                                 </div>
+                                 <p className="text-sm text-white/40">{order.items}</p>
+                                 <p className="text-xs text-white/30 mt-1">{order.date}</p>
+                            </div>
+                            <div className="text-right">
+                                 <p className="text-bronze-500 font-bold mb-2">₹{order.total.toLocaleString('en-IN')}</p>
+                                 <Button size="sm" variant="outline" className="h-8 text-xs">View Invoice</Button>
+                            </div>
                         </div>
-                        <div className="text-right">
-                             <p className="text-bronze-500 font-bold mb-2">₹{order.total.toLocaleString('en-IN')}</p>
-                             <Button size="sm" variant="outline" className="h-8 text-xs">View Invoice</Button>
+                    ))
+                ) : (
+                    <div className="bg-white/5 rounded-2xl p-12 text-center border border-white/5 border-dashed">
+                        <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 text-white/30">
+                            <Package size={24} />
                         </div>
+                        <h3 className="text-white font-bold text-lg mb-2">No orders yet</h3>
+                        <p className="text-white/40 text-sm max-w-xs mx-auto mb-6">Looks like you haven't made your first extraction yet.</p>
+                        <Button onClick={() => window.location.href = '/machines'}>Browse Machines</Button>
                     </div>
-                ))}
+                )}
             </div>
         </div>
     )
