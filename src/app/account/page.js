@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { User, Package, Settings, LogOut, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -140,8 +141,29 @@ function ProfileTab({ session }) {
 }
 
 function OrdersTab() {
-    // In a real app, fetch orders from API
-    const orders = []; 
+    const [orders, setOrders] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        async function fetchOrders() {
+            try {
+                const res = await fetch('/api/orders');
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrders(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch orders", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchOrders();
+    }, []);
+
+    if (loading) {
+        return <div className="text-white/40">Loading orders...</div>;
+    }
 
     return (
         <div className="space-y-8">
@@ -153,7 +175,7 @@ function OrdersTab() {
             <div className="space-y-4">
                 {orders.length > 0 ? (
                     orders.map((order) => (
-                        <div key={order.id} className="bg-black/20 rounded-xl p-6 border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-bronze-500/30 transition-colors">
+                        <div key={order._id} className="bg-black/20 rounded-xl p-6 border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-bronze-500/30 transition-colors">
                             <div>
                                  <div className="flex items-center gap-3 mb-1">
                                     <span className="text-white font-bold">{order.id}</span>
@@ -161,12 +183,16 @@ function OrdersTab() {
                                         {order.status}
                                     </span>
                                  </div>
-                                 <p className="text-sm text-white/40">{order.items}</p>
-                                 <p className="text-xs text-white/30 mt-1">{order.date}</p>
+                                 <p className="text-sm text-white/40">
+                                    {order.items.map(i => i.name).join(", ")}
+                                 </p>
+                                 <p className="text-xs text-white/30 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                             </div>
                             <div className="text-right">
                                  <p className="text-bronze-500 font-bold mb-2">₹{order.total.toLocaleString('en-IN')}</p>
-                                 <Button size="sm" variant="outline" className="h-8 text-xs">View Invoice</Button>
+                                 <Link href={`/account/invoice/${order.id}`}>
+                                    <Button size="sm" variant="outline" className="h-8 text-xs">View Invoice</Button>
+                                 </Link>
                             </div>
                         </div>
                     ))

@@ -1,7 +1,10 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import clientPromise from "@/lib/mongodb"
 
 export const authOptions = {
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -9,10 +12,16 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signIn: '/login', // We'll trigger this manually usually
+    signIn: '/login', 
+  },
+  session: {
+      strategy: "jwt", // We Keep JWT for easier session handling on client, but adapter persists user
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token, user }) {
+        if (token && session.user) {
+            session.user.id = token.sub;
+        }
       return session;
     },
   },

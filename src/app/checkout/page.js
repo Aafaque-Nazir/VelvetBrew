@@ -22,20 +22,48 @@ export default function CheckoutPage() {
                       <Check className="text-green-500" size={40} />
                   </div>
                   <h1 className="text-3xl font-bold text-white mb-4">Order Confirmed!</h1>
-                  <p className="text-white/60 mb-8">Thank you for choosing VelvetBrew. Your order number is #VB{Math.floor(Math.random() * 10000)}.</p>
-                  <Button onClick={() => window.location.href = '/'}>Return Home</Button>
+                  <p className="text-white/60 mb-8">Thank you for choosing VelvetBrew. Your order has been placed successfully.</p>
+                  <Button onClick={() => window.location.href = '/account'}>View Order in Account</Button>
               </motion.div>
           </div>
       )
   }
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
       e.preventDefault();
       setLoading(true);
-      setTimeout(() => {
+
+      // Prepare order data
+      const orderData = {
+          items: cartItems,
+          total: cartTotal,
+          shippingAddress: {
+             // In a real form, gather these from state
+             address: e.target[3].value,
+             city: e.target[4].value,
+             postalCode: e.target[5].value
+          }
+      };
+
+      try {
+          const res = await fetch('/api/orders', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(orderData)
+          });
+
+          if (res.ok) {
+              setStep(2);
+              // clearCart(); // You might want to implement this in context
+          } else {
+              alert("Something went wrong. Please try again.");
+          }
+      } catch (error) {
+          console.error("Checkout error:", error);
+          alert("Failed to process order.");
+      } finally {
           setLoading(false);
-          setStep(2);
-      }, 2000);
+      }
   }
 
   return (
