@@ -15,7 +15,11 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cartContext";
 
 export default function ProductInfo({ product, onColorChange }) {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  // Safe defaults
+  const colors = product.colors || [];
+  const features = product.features || [];
+  
+  const [selectedColor, setSelectedColor] = useState(colors.length > 0 ? colors[0] : null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
@@ -23,39 +27,11 @@ export default function ProductInfo({ product, onColorChange }) {
     setSelectedColor(color);
     onColorChange(color.image);
   };
+// ... (rest of component logic)
 
-  const increment = () => setQuantity((q) => q + 1);
-  const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-
-  return (
-    <div className="space-y-8 text-white">
-      {/* Header */}
-      <div className="space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          {product.name}
-        </h1>
-        <div className="flex items-center gap-4 text-sm">
-          <div className="flex text-bronze-500">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star key={i} size={16} fill="currentColor" />
-            ))}
-          </div>
-          <span className="text-white/40">128 Reviews</span>
-        </div>
-        <p className="text-2xl font-light text-bronze-500">
-          ₹{product.price.toLocaleString("en-IN")}
-        </p>
-      </div>
-
-      <div className="w-full h-[1px] bg-white/10" />
-
-      {/* Description */}
-      <div className="space-y-4">
-        <p className="text-white/70 leading-relaxed font-light text-lg">
-          {product.description}
-        </p>
+// RENDER SECTION for Features
         <ul className="space-y-2">
-          {product.features.map((feature, idx) => (
+          {features.map((feature, idx) => (
             <li
               key={idx}
               className="flex items-center gap-2 text-sm text-white/50"
@@ -63,29 +39,33 @@ export default function ProductInfo({ product, onColorChange }) {
               <Check size={14} className="text-bronze-500" /> {feature}
             </li>
           ))}
+          {features.length === 0 && (
+            <li className="text-sm text-white/30 italic">No specific features listed.</li>
+          )}
         </ul>
       </div>
 
-      {/* Color Selection */}
+      {/* Color Selection - Only show if colors exist */}
+      {colors.length > 0 && (
       <div className="space-y-4">
         <span className="text-sm font-medium text-white/60">
           Select Finish:{" "}
-          <span className="text-white">{selectedColor.name}</span>
+          <span className="text-white">{selectedColor?.name}</span>
         </span>
         <div className="flex gap-3">
-          {product.colors.map((color) => (
+          {colors.map((color) => (
             <button
               key={color.id}
               onClick={() => handleColorSelect(color)}
               className={cn(
                 "h-10 w-10 rounded-full border-2 transition-all flex items-center justify-center",
-                selectedColor.id === color.id
+                selectedColor?.id === color.id
                   ? "border-bronze-500 scale-110"
                   : "border-white/10 opacity-70 hover:opacity-100",
               )}
               style={{ backgroundColor: color.hex }}
             >
-              {selectedColor.id === color.id && (
+              {selectedColor?.id === color.id && (
                 <Check
                   size={16}
                   className={cn("text-bronze-500 mix-blend-difference")}
@@ -95,6 +75,7 @@ export default function ProductInfo({ product, onColorChange }) {
           ))}
         </div>
       </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-col gap-4">

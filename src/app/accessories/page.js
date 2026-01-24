@@ -1,19 +1,5 @@
+```
 // No change needed if confident, but let's check BestSellers instead.
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { ShoppingBag } from 'lucide-react';
-import { useCart } from '@/lib/cartContext';
-
-const accessories = [
-  { id: 'acc-1', name: 'Walnut Precision Tamper', price: 9999, image: '/acc_tamper.png' },
-  { id: 'acc-2', name: 'Barista Pitcher Matte Black', price: 3499, image: '/acc_pitcher.png' }, 
-  { id: 'acc-3', name: 'Naked Portafilter 58mm', price: 6999, image: '/acc_portafilter.png' },
-  { id: 'acc-4', name: 'Pro Knock Box', price: 4499, image: '/acc_knockbox.png' },
-];
-
-export default function AccessoriesPage() {
   const { addToCart } = useCart();
 
   return (

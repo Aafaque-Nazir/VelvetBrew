@@ -7,16 +7,28 @@ import ReviewsSection from "@/components/product/ReviewsSection";
 import BestSellers from "@/components/landing/BestSellers";
 
 export default function ProductView({ product }) {
-  const [currentImage, setCurrentImage] = useState(product.colors[0].image);
+  // Use first color image, or first gallery image, or fallback
+  const initialImage =
+    product.colors && product.colors.length > 0
+      ? product.colors[0].image
+      : product.gallery && product.gallery.length > 0
+        ? product.gallery[0]
+        : product.image;
+
+  const [currentImage, setCurrentImage] = useState(initialImage);
 
   // Combine gallery images with color variants for a full gallery
+  const colorImages = product.colors ? product.colors.map((c) => c.image) : [];
+  const galleryImages = product.gallery || [];
+
   const allImages = [
-    ...product.colors.map((c) => c.image),
-    ...product.gallery.filter(
-      (img) => !product.colors.find((c) => c.image === img),
-    ),
+    ...colorImages,
+    ...galleryImages.filter((img) => !colorImages.includes(img)),
   ];
-  // Filter duplicates
+
+  // If no images at all, use the main product image if available
+  if (allImages.length === 0 && product.image) allImages.push(product.image);
+
   const uniqueImages = [...new Set(allImages)];
 
   return (

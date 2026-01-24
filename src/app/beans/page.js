@@ -1,20 +1,16 @@
-"use client";
+```javascript
 import React from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { ShoppingBag } from 'lucide-react';
-import { useCart } from '@/lib/cartContext';
+import Navbar from '@/components/Navbar';
+import ProductCard from '@/components/ProductCard';
+import { getProductsByCategory } from '@/lib/dbProducts';
 
-const beans = [
-  { id: 'bean-1', name: 'Ethiopian Yirgacheffe', roast: 'Light Roast', notes: 'Floral, Citrus, bright', price: 1800, image: '/beans_light.png' },
-  { id: 'bean-2', name: 'Colombian Supremo', roast: 'Medium Roast', notes: 'Caramel, Nutty, smooth', price: 1600, image: '/beans_medium.png' },
-  { id: 'bean-3', name: 'Sumatra Mandheling', roast: 'Dark Roast', notes: 'Earthy, Spicy, bold', price: 1750, image: '/beans_dark.png' },
-];
+export const metadata = {
+  title: "Premium Beans | VelvetBrew",
+  description: "Ethically sourced, small-batch roasted coffee beans.",
+};
 
-export default function BeansPage() {
-  const { addToCart } = useCart();
+export default async function BeansPage() {
+  const beans = await getProductsByCategory('beans');
 
   return (
     <div className="min-h-screen bg-[#0f0e0e] pt-12 pb-24">

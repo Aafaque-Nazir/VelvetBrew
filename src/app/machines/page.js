@@ -1,32 +1,5 @@
 "use client";
 import React from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
-import { ShoppingBag } from 'lucide-react';
-import { useCart } from '@/lib/cartContext';
-import Link from 'next/link';
-
-const machines = [
-  { 
-      id: 'obsidian-project', 
-      name: 'The Obsidian Project', 
-      tagline: 'Precision in the Shadows',
-      price: 99999, 
-      image: '/espresso_black.png',
-      tag: 'Best Seller'
-  },
-  { 
-      id: 'classic-lusso', 
-      name: 'Classic Lusso', 
-      tagline: 'Timeless Italian Design',
-      price: 189999, 
-      image: '/espresso_chrome.png',
-      tag: 'Commercial'
-  },
-  { 
-      id: 'white-aether', 
-      name: 'White Aether', 
       tagline: 'Minimalist Perfection',
       price: 119999, 
       image: '/machine_compact.png',

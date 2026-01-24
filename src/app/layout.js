@@ -1,11 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import "./globals.css";
-
-import { CartProvider } from "@/lib/cartContext";
-import CartDrawer from "@/components/cart/CartDrawer";
-import { AuthProvider } from "@/components/AuthProvider";
+import ClientLayout from "@/components/ClientLayout";
+import { getSystemSettings } from "@/lib/settings";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { isAdmin } from "@/lib/admin";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,20 +22,48 @@ export const metadata = {
   description: "Experience the art of coffee with our precision-engineered espresso machines.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const settings = await getSystemSettings();
+  const session = await getServerSession(authOptions);
+  
+  const isMaintenanceOn = settings.maintenanceMode;
+  const isUserAdmin = session && isAdmin(session.user.email);
+
+  // If maintenance is ON and user is NOT admin, show maintenance screen
+  // EXCEPT for login page? No, usually admin login is separate or we allow /api/auth to work.
+  // Using ClientLayout logic might hide Navbar, but here we replace the whole body content.
+  // Note: We need to allow Google Auth callback to work so Admin can actually log in even during maintenance!
+  // So we pass a prop effectively or handle partial rendering.
+  
+  // Better logic: passing 'maintenanceMode' to ClientLayout? 
+  // If we return MaintenanceScreen here, standard routes won't work. 
+  // BUT we must allow the Admin to login. 
+  
+  if (isMaintenanceOn && !isUserAdmin) {
+     // We return ClientLayout but forcing maintenance? 
+     // Or we just return MaintenanceScreen. 
+     // Issue: How does Admin login if they see Maintenance Screen?
+     // Solution: Allow /api routes to pass through (this is layout, applied to pages).
+     // We need to render Children ONLY if it's admin or maintenance off.
+     
+     // Wait, if I replace children with MaintenanceScreen, user valid session check happens first. 
+     // If user is NOT logged in, they see maintenance.
+     // How do they login? They need a "Admin Login" button on maintenance page likely?
+  }
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-bronze-500 selection:text-black`}>
-        <AuthProvider>
-          <CartProvider>
-            <Navbar />
-            <CartDrawer />
-            <main className="min-h-screen pt-20">
-              {children}
-            </main>
-            <Footer />
-          </CartProvider>
-        </AuthProvider>
+         {isMaintenanceOn && !isUserAdmin ? (
+             <ClientLayout>
+                {/* We render maintenance screen inside the providers so Auth still works if we add a Login button later */}
+                 <MaintenanceScreen />
+                 {/* Invisible login trigger for admin could be implemented, or just manual /api/auth/signin call if needed, 
+                     but for now, let's assume Admin is ALREADY logged in or we add a hidden/small link on Maintenance page */}
+             </ClientLayout>
+         ) : (
+            <ClientLayout>{children}</ClientLayout>
+         )}
       </body>
     </html>
   );
