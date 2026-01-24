@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { CartProvider } from "@/lib/cartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +26,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-bronze-500 selection:text-black`}>
-        <CartProvider>
-          <Navbar />
-          <CartDrawer />
-          <main className="min-h-screen pt-20">
-            {children}
-          </main>
-          <Footer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Navbar />
+            <CartDrawer />
+            <main className="min-h-screen pt-20">
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

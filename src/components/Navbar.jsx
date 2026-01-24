@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Search, Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cartContext";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { User, LogOut } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const { setCartOpen, cartCount } = useCart();
@@ -98,14 +101,7 @@ export default function Navbar() {
                 </span>
               )}
             </button>
-            <Button
-              variant="primary"
-              size="sm"
-              className="hidden md:inline-flex"
-              onClick={() => (window.location.href = "/machines")}
-            >
-              Get Started
-            </Button>
+            <AuthButton />
           </div>
         </div>
       </motion.nav>
@@ -169,6 +165,69 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function AuthButton() {
+  const { data: session } = useSession();
+
+  if (session) {
+    return (
+      <div className="relative group hidden md:block">
+        <Link
+          href="/account"
+          className="flex items-center gap-3 overflow-hidden rounded-full border border-white/10 p-1 pr-3 hover:border-bronze-500 transition-colors"
+        >
+          {session.user.image ? (
+            <div className="relative w-8 h-8 rounded-full overflow-hidden">
+              <Image
+                src={session.user.image}
+                alt={session.user.name}
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          ) : (
+            <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+              <User size={16} className="text-white" />
+            </div>
+          )}
+          <span className="text-sm font-medium text-white max-w-[100px] truncate">
+            {session.user.name}
+          </span>
+        </Link>
+
+        {/* Dropdown */}
+        <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-2 shadow-2xl w-48 flex flex-col gap-1">
+            <Link
+              href="/account"
+              className="w-full flex items-center gap-2 text-white hover:bg-white/5 p-2 rounded-lg text-sm transition-colors"
+            >
+              <User size={16} /> My Account
+            </Link>
+            <button
+              onClick={() => signOut()}
+              className="w-full flex items-center gap-2 text-red-500 hover:bg-white/5 p-2 rounded-lg text-sm transition-colors"
+            >
+              <LogOut size={16} /> Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      variant="primary"
+      size="sm"
+      className="hidden md:inline-flex"
+      onClick={() => signIn("google")}
+    >
+      Login
+    </Button>
   );
 }
 
