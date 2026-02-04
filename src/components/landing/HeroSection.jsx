@@ -9,16 +9,16 @@ import { ArrowRight, Play } from "lucide-react";
 export default function HeroSection() {
   const containerRef = useRef(null);
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
   const y2 = useTransform(scrollY, [0, 500], [0, -150]);
 
   return (
     <section
       ref={containerRef}
-      className="relative h-screen flex items-center justify-center bg-[#070707] overflow-hidden"
+      className="relative h-screen flex items-center justify-center bg-[#070707] z-40"
     >
       {/* Dynamic Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-bronze-900/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-blue-900/5 rounded-full blur-[100px]" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 pointer-events-none mix-blend-overlay"></div>
