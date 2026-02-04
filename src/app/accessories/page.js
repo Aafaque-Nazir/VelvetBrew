@@ -1,6 +1,14 @@
-```
-// No change needed if confident, but let's check BestSellers instead.
+'use client';
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { products } from '@/lib/products';
+import { useCart } from '@/lib/cartContext';
+
+export default function AccessoriesPage() {
   const { addToCart } = useCart();
+  const accessories = products.filter(product => product.category === 'accessories');
 
   return (
     <div className="min-h-screen bg-[#0f0e0e] pt-12 pb-24">

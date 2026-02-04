@@ -12,6 +12,7 @@ import Image from "next/image";
 export default function Navbar() {
   const { setCartOpen, cartCount } = useCart();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const abortControllerRef = useRef(null);
@@ -57,6 +58,11 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, [query]);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, []);
+
   return (
     <>
       <motion.nav
@@ -75,6 +81,7 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
+            <NavLink href="/">Home</NavLink>
             <NavLink href="/machines">Machines</NavLink>
             <NavLink href="/accessories">Accessories</NavLink>
             <NavLink href="/beans">Beans</NavLink>
@@ -101,10 +108,67 @@ export default function Navbar() {
                 </span>
               )}
             </button>
-            <AuthButton />
+
+            <div className="hidden md:block">
+              <AuthButton />
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="text-white md:hidden ml-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </motion.nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-40 bg-black/95 pt-28 px-6 md:hidden"
+          >
+            <div className="flex flex-col gap-6 text-center">
+              <MobileNavLink href="/" onClick={() => setMobileMenuOpen(false)}>
+                Home
+              </MobileNavLink>
+              <MobileNavLink
+                href="/machines"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Machines
+              </MobileNavLink>
+              <MobileNavLink
+                href="/accessories"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Accessories
+              </MobileNavLink>
+              <MobileNavLink
+                href="/beans"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Beans
+              </MobileNavLink>
+              <MobileNavLink
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Story
+              </MobileNavLink>
+
+              <div className="pt-8 flex justify-center">
+                <AuthButton mobile />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Search Overlay */}
       <AnimatePresence>
@@ -168,12 +232,24 @@ export default function Navbar() {
   );
 }
 
-function AuthButton() {
+function MobileNavLink({ href, children, onClick }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="text-2xl font-bold text-white hover:text-bronze-500 transition-colors"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function AuthButton({ mobile }) {
   const { data: session } = useSession();
 
   if (session) {
     return (
-      <div className="relative group hidden md:block">
+      <div className={`relative group ${!mobile ? "hidden md:block" : ""}`}>
         <Link
           href="/account"
           className="flex items-center gap-3 overflow-hidden rounded-full border border-white/10 p-1 pr-3 hover:border-bronze-500 transition-colors"
@@ -199,7 +275,7 @@ function AuthButton() {
         </Link>
 
         {/* Dropdown */}
-        <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+        <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
           <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-2 shadow-2xl w-48 flex flex-col gap-1">
             <Link
               href="/account"
@@ -223,7 +299,7 @@ function AuthButton() {
     <Button
       variant="primary"
       size="sm"
-      className="hidden md:inline-flex"
+      className={!mobile ? "hidden md:inline-flex" : ""}
       onClick={() => signIn("google")}
     >
       Login

@@ -1,16 +1,14 @@
-```javascript
-import React from 'react';
-import Navbar from '@/components/Navbar';
-import ProductCard from '@/components/ProductCard';
-import { getProductsByCategory } from '@/lib/dbProducts';
+'use client';
 
-export const metadata = {
-  title: "Premium Beans | VelvetBrew",
-  description: "Ethically sourced, small-batch roasted coffee beans.",
-};
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { products } from '@/lib/products';
+import { useCart } from '@/lib/cartContext';
 
-export default async function BeansPage() {
-  const beans = await getProductsByCategory('beans');
+export default function BeansPage() {
+  const { addToCart } = useCart();
+  const beans = products.filter(product => product.category === 'beans');
 
   return (
     <div className="min-h-screen bg-[#0f0e0e] pt-12 pb-24">
