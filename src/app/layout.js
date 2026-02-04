@@ -53,7 +53,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-bronze-500 selection:text-black`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-bronze-500 selection:text-black overflow-x-hidden`}>
          {isMaintenanceOn && !isUserAdmin ? (
              <ClientLayout>
                 {/* We render maintenance screen inside the providers so Auth still works if we add a Login button later */}
@@ -62,7 +62,7 @@ export default async function RootLayout({ children }) {
                      but for now, let's assume Admin is ALREADY logged in or we add a hidden/small link on Maintenance page */}
              </ClientLayout>
          ) : (
-            <ClientLayout>{children}</ClientLayout>
+             <ClientLayout isAdmin={isUserAdmin}>{children}</ClientLayout>
          )}
       </body>
     </html>

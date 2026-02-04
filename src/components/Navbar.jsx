@@ -2,17 +2,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Search, Menu, X, ArrowRight } from "lucide-react";
+import {
+  ShoppingBag,
+  Search,
+  Menu,
+  X,
+  ArrowRight,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cartContext";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { User, LogOut } from "lucide-react";
 import Image from "next/image";
 
-export default function Navbar() {
+export default function Navbar(props) {
   const { setCartOpen, cartCount } = useCart();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shopMenuOpen, setShopMenuOpen] = useState(false); // Mobile toggle
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const abortControllerRef = useRef(null);
@@ -82,10 +90,27 @@ export default function Navbar() {
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/machines">Machines</NavLink>
-            <NavLink href="/accessories">Accessories</NavLink>
-            <NavLink href="/beans">Beans</NavLink>
+
+            {/* Shop Dropdown */}
+            <div className="relative group">
+              <button className="flex items-center gap-1 text-sm font-medium text-white/80 hover:text-bronze-500 uppercase tracking-wide transition-colors py-2">
+                Shop{" "}
+                <ChevronDown
+                  size={14}
+                  className="group-hover:rotate-180 transition-transform duration-300"
+                />
+              </button>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
+                <div className="bg-[#0f0f0f] border border-white/10 rounded-xl p-2 shadow-2xl min-w-[200px] flex flex-col gap-1 overflow-hidden backdrop-blur-xl">
+                  <DropdownLink href="/machines">Machines</DropdownLink>
+                  <DropdownLink href="/accessories">Accessories</DropdownLink>
+                  <DropdownLink href="/beans">Beans</DropdownLink>
+                </div>
+              </div>
+            </div>
+
             <NavLink href="/about">Story</NavLink>
+            <NavLink href="/contact">Contact</NavLink>
           </div>
 
           {/* Actions */}
@@ -109,7 +134,15 @@ export default function Navbar() {
               )}
             </button>
 
-            <div className="hidden md:block">
+            <div className="hidden md:flex items-center gap-4">
+              {props.isAdmin && (
+                <Link
+                  href="/admin"
+                  className="text-sm font-medium text-bronze-500 hover:text-white transition-colors border border-bronze-500/20 hover:border-bronze-500/50 hover:bg-bronze-500/10 px-3 py-1.5 rounded-full"
+                >
+                  Admin
+                </Link>
+              )}
               <AuthButton />
             </div>
 
@@ -128,33 +161,72 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-black/95 pt-28 px-6 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-[#0f0f0f]/98 backdrop-blur-xl md:hidden flex flex-col pt-24 pb-10 px-6 overflow-y-auto"
           >
-            <div className="flex flex-col gap-6 text-center">
+            <motion.div
+              className="flex flex-col gap-6 flex-1"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+            >
               <MobileNavLink href="/" onClick={() => setMobileMenuOpen(false)}>
                 Home
               </MobileNavLink>
-              <MobileNavLink
-                href="/machines"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Machines
-              </MobileNavLink>
-              <MobileNavLink
-                href="/accessories"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Accessories
-              </MobileNavLink>
-              <MobileNavLink
-                href="/beans"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Beans
-              </MobileNavLink>
+
+              {/* Mobile Shop Accordion */}
+              <div className="flex flex-col">
+                <button
+                  onClick={() => setShopMenuOpen(!shopMenuOpen)}
+                  className="text-4xl font-bold text-white text-left flex items-center justify-between group"
+                >
+                  Shop
+                  <ChevronDown
+                    className={`transition-transform duration-300 text-bronze-500 ${shopMenuOpen ? "rotate-180" : ""}`}
+                    size={32}
+                  />
+                </button>
+                <AnimatePresence>
+                  {shopMenuOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden flex flex-col gap-4 pl-4 border-l border-white/10 mt-4"
+                    >
+                      <MobileSubLink
+                        href="/machines"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Machines
+                      </MobileSubLink>
+                      <MobileSubLink
+                        href="/accessories"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Accessories
+                      </MobileSubLink>
+                      <MobileSubLink
+                        href="/beans"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Beans
+                      </MobileSubLink>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               <MobileNavLink
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
@@ -162,10 +234,33 @@ export default function Navbar() {
                 Story
               </MobileNavLink>
 
-              <div className="pt-8 flex justify-center">
+              <MobileNavLink
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </MobileNavLink>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-8 pt-8 border-t border-white/10 flex flex-col gap-6"
+            >
+              {props.isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center w-full py-3 rounded-full border border-bronze-500/30 text-bronze-500 font-medium uppercase tracking-widest hover:bg-bronze-500/10 transition-colors"
+                >
+                  Admin Panel
+                </Link>
+              )}
+              <div className="flex justify-center">
                 <AuthButton mobile />
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -234,10 +329,26 @@ export default function Navbar() {
 
 function MobileNavLink({ href, children, onClick }) {
   return (
+    <motion.div
+      variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0 } }}
+    >
+      <Link
+        href={href}
+        onClick={onClick}
+        className="text-4xl font-bold text-white hover:text-bronze-500 transition-colors block"
+      >
+        {children}
+      </Link>
+    </motion.div>
+  );
+}
+
+function MobileSubLink({ href, children, onClick }) {
+  return (
     <Link
       href={href}
       onClick={onClick}
-      className="text-2xl font-bold text-white hover:text-bronze-500 transition-colors"
+      className="text-xl text-white/60 hover:text-white transition-colors block py-1"
     >
       {children}
     </Link>
@@ -312,6 +423,17 @@ function NavLink({ href, children }) {
     <Link
       href={href}
       className="text-sm font-medium text-white/80 hover:text-bronze-500 transition-colors uppercase tracking-wide"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function DropdownLink({ href, children }) {
+  return (
+    <Link
+      href={href}
+      className="block px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors whitespace-nowrap"
     >
       {children}
     </Link>

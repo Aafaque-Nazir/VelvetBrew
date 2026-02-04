@@ -31,7 +31,7 @@ export default function MachinesPage() {
                     transition={{ delay: idx * 0.1 }}
                     className="group bg-[#151515] rounded-3xl border border-white/5 hover:border-bronze-500/30 transition-all duration-500 flex flex-col overflow-hidden"
                 >
-                    <Link href={`/machines/${item.id}`} className="block relative aspect-video w-full bg-[#1a1a1a]/50 overflow-hidden">
+                    <Link href={`/products/${item.id}`} className="block relative aspect-video w-full bg-[#1a1a1a]/50 overflow-hidden">
                         {/* Tag */}
                         <div className="absolute top-6 left-6 z-20">
                             <span className="bg-white/10 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md border border-white/5">

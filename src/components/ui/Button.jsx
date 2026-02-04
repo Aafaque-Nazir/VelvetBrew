@@ -10,7 +10,7 @@ const Button = React.forwardRef(
   ) => {
     const variants = {
       primary:
-        "bg-bronze-500 text-black hover:bg-bronze-600 shadow-[0_0_15px_rgba(207,176,137,0.3)]",
+        "bg-gradient-to-r from-bronze-500 to-bronze-600 text-black hover:from-bronze-400 hover:to-bronze-500 shadow-[0_0_20px_rgba(217,119,6,0.2)] hover:shadow-[0_0_30px_rgba(217,119,6,0.4)] border border-transparent",
       outline:
         "border border-bronze-500 text-bronze-500 hover:bg-bronze-500/10",
       ghost: "text-white/70 hover:text-white hover:bg-white/5",
@@ -21,6 +21,7 @@ const Button = React.forwardRef(
       default: "h-10 px-6 py-2",
       sm: "h-9 px-4 text-xs",
       lg: "h-12 px-8 text-lg font-medium",
+      xl: "h-14 px-10 text-lg font-bold tracking-wide",
       icon: "h-10 w-10 p-2",
     };
 

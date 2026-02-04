@@ -15,7 +15,7 @@ export default function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center bg-[#070707] overflow-hidden pt-20"
+      className="relative h-screen flex items-center justify-center bg-[#070707] overflow-hidden"
     >
       {/* Dynamic Background */}
       <div className="absolute inset-0 z-0">
@@ -44,17 +44,17 @@ export default function HeroSection() {
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.9] tracking-tighter mb-8">
             <motion.span
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 100, skewY: 10 }}
+              animate={{ opacity: 1, y: 0, skewY: 0 }}
               transition={{ duration: 0.8, ease: "circOut" }}
               className="block"
             >
               PURE
             </motion.span>
             <motion.span
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "circOut" }}
+              initial={{ opacity: 0, y: 100, skewY: 10 }}
+              animate={{ opacity: 1, y: 0, skewY: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: "circOut" }}
               className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40"
             >
               VELVET
@@ -75,23 +75,23 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-wrap gap-6 mt-10 relative z-20"
           >
             <Link href="/products/obsidian-project">
-              <Button size="xl" className="rounded-full px-8 group text-base">
+              <Button size="xl" className="rounded-full group">
                 Explore Collection
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Button
               variant="ghost"
               size="xl"
-              className="rounded-full px-8 text-white hover:text-white hover:bg-white/5 gap-2"
+              className="rounded-full text-white hover:text-white border border-white/10 hover:border-white/30 bg-white/5 backdrop-blur-sm gap-3 pl-2"
             >
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10">
-                <Play className="w-3 h-3 fill-white" />
+              <div className="w-10 h-10 rounded-full bg-bronze-500/20 flex items-center justify-center border border-bronze-500/30">
+                <Play className="w-4 h-4 fill-bronze-500" />
               </div>
-              The Film
+              <span className="pr-4">The Film</span>
             </Button>
           </motion.div>
         </motion.div>
