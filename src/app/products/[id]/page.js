@@ -1,5 +1,4 @@
-import React from 'react';
-import { notFound } from "next/navimport React from 'react';
+import { notFound } from 'next/navigation';
 import { getProductBySlug } from '@/lib/dbProducts';
 import ProductView from '@/components/product/ProductView';
 

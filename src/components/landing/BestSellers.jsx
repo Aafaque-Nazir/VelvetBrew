@@ -1,117 +1,133 @@
 "use client";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { ShoppingBag } from "lucide-react";
-
-const products = [
-  {
-    id: 1,
-    name: "The Obsidian Project",
-    price: "₹99,999",
-    image: "/espresso_black.png",
-    tag: "Best Seller",
-  },
-  {
-    id: 2,
-    name: "Classic Lusso",
-    price: "₹1,89,999",
-    image: "/espresso_chrome.png",
-    tag: "Commercial Grade",
-  },
-  {
-    id: 3,
-    name: "Precision Grinder",
-    price: "₹45,999",
-    image: "/grinder_bronze.png",
-    tag: "New Arrival",
-  },
-];
+import { ArrowUpRight } from "lucide-react";
+import { products } from "@/lib/products";
 
 export default function BestSellers() {
+  const featuredProducts = products.slice(0, 4); // Take first 4 products
+  const [hoveredProduct, setHoveredProduct] = useState(featuredProducts[0]);
+
   return (
-    <section className="py-24 bg-[#0a0a0a]">
-      <div className="container mx-auto px-6 max-w-7xl">
-        <div className="flex justify-between items-end mb-16">
-          <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tighter">
-              The <span className="text-bronze-500">Collection</span>
-            </h2>
-            <p className="text-white/60">Curated for the uncompromising.</p>
+    <section className="py-32 bg-[#0a0a0a] relative overflow-hidden min-h-[800px] flex items-center">
+      {/* Dynamic Background Image */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={hoveredProduct ? hoveredProduct.id : "empty"}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 0.2, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7 }}
+          className="absolute inset-0 z-0 bg-[#0a0a0a]"
+        >
+          {hoveredProduct && (
+            <Image
+              src={
+                hoveredProduct.image ||
+                hoveredProduct.colors?.[0]?.image ||
+                hoveredProduct.gallery?.[0]
+              }
+              alt="Background"
+              fill
+              className="object-cover opacity-50 blur-sm"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent" />
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="container mx-auto px-6 max-w-7xl relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        {/* Left Side: Text & List */}
+        <div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-6xl font-bold text-white mb-12 tracking-tighter"
+          >
+            Curated <span className="text-bronze-500">Works</span>
+          </motion.h2>
+
+          <div className="space-y-4">
+            {featuredProducts.map((product) => (
+              <Link
+                key={product.id}
+                href={`/products/${product.id}`}
+                onMouseEnter={() => setHoveredProduct(product)}
+                className="group block"
+              >
+                <div
+                  className={`p-6 border-b border-white/10 flex items-center justify-between transition-all duration-300 ${hoveredProduct.id === product.id ? "pl-10 border-bronze-500/50 bg-white/5" : "hover:pl-4 hover:border-white/30"}`}
+                >
+                  <div>
+                    <h3
+                      className={`text-2xl md:text-3xl font-bold transition-colors ${hoveredProduct.id === product.id ? "text-white" : "text-white/40 group-hover:text-white"}`}
+                    >
+                      {product.name}
+                    </h3>
+                    <p className="text-sm text-bronze-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {product.tagline || product.category}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`text-lg font-medium transition-colors ${hoveredProduct.id === product.id ? "text-white" : "text-white/40"}`}
+                    >
+                      ₹{product.price.toLocaleString("en-IN")}
+                    </span>
+                    <ArrowUpRight
+                      className={`transition-transform duration-300 ${hoveredProduct.id === product.id ? "translate-x-0 opacity-100 text-bronze-500" : "-translate-x-4 opacity-0"}`}
+                    />
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
-          <Link
-            href="/machines"
-            className="hidden md:block text-white hover:text-bronze-500 transition-colors"
-          >
-            View All Machines &rarr;
-          </Link>
+
+          <div className="mt-12">
+            <Link
+              href="/machines"
+              className="text-white/40 hover:text-white transition-colors text-sm uppercase tracking-widest border-b border-transparent hover:border-white pb-1"
+            >
+              View Full Catalogue
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {products.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
-          ))}
-        </div>
+        {/* Right Side: Preview Image (Floating) */}
+        <div className="hidden md:flex justify-center items-center relative h-[600px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={hoveredProduct ? hoveredProduct.id : "preview"}
+              initial={{ opacity: 0, y: 50, rotate: 5 }}
+              animate={{ opacity: 1, y: 0, rotate: 0 }}
+              exit={{ opacity: 0, y: -50, rotate: -5 }}
+              transition={{ duration: 0.5 }}
+              className="relative w-full h-full max-h-[500px]"
+            >
+              {hoveredProduct && (
+                <Image
+                  src={
+                    hoveredProduct.image ||
+                    hoveredProduct.colors?.[0]?.image ||
+                    hoveredProduct.gallery?.[0]
+                  }
+                  alt={hoveredProduct.name}
+                  fill
+                  className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                  priority
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-        <div className="mt-12 text-center md:hidden">
-          <Link
-            href="/machines"
-            className="inline-flex h-10 items-center justify-center rounded-md border border-white/20 bg-transparent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 focus:outline-none"
-          >
-            View All Machines
-          </Link>
+          {/* Decorative Circle */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-white/5 rounded-full z-[-1] animate-[spin_60s_linear_infinite]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] border border-bronze-500/10 rounded-full z-[-1]" />
         </div>
       </div>
     </section>
-  );
-}
-
-function ProductCard({ product, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      viewport={{ once: true }}
-      className="group bg-[#151515] rounded-3xl border border-white/5 hover:border-bronze-500/30 transition-all duration-500 overflow-hidden flex flex-col"
-    >
-      <Link
-        href={`/products/${product.id === 1 ? "obsidian-project" : "obsidian-project"}`}
-        className="flex-1 flex flex-col"
-      >
-        {/* Image Area */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#1a1a1a]/50">
-          {/* Tag */}
-          <div className="absolute top-4 left-4 z-20">
-            <span className="bg-white/10 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md border border-white/5">
-              {product.tag}
-            </span>
-          </div>
-
-          <div className="absolute inset-0 flex items-center justify-center p-8">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-contain transition-transform duration-700 group-hover:scale-110"
-            />
-          </div>
-
-          {/* Quick Add Overlay */}
-          <div className="absolute bottom-4 right-4 translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
-            <div className="bg-bronze-500 text-black p-3 rounded-full shadow-lg">
-              <ShoppingBag size={20} />
-            </div>
-          </div>
-        </div>
-
-        {/* Info Area - Now Unified */}
-        <div className="p-6 bg-[#151515] border-t border-white/5">
-          <h3 className="text-lg font-bold text-white mb-2">{product.name}</h3>
-          <p className="text-bronze-500 font-medium">{product.price}</p>
-        </div>
-      </Link>
-    </motion.div>
   );
 }

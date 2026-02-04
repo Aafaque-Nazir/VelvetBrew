@@ -14,7 +14,8 @@ export default function ProductGallery({ images, selectedImage }) {
 
   return (
     <div className="space-y-4">
-      <div className="relative aspect-square w-full bg-[#151515] rounded-2xl overflow-hidden border border-white/5 flex items-center justify-center">
+      <div className="relative aspect-square w-full bg-[#151515] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center shadow-2xl">
+        <div className="absolute inset-0 bg-radial-gradient from-white/5 to-transparent opacity-50" />
         <AnimatePresence mode="wait">
           <motion.div
             key={activeImage}

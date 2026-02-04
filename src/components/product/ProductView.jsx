@@ -32,8 +32,12 @@ export default function ProductView({ product }) {
   const uniqueImages = [...new Set(allImages)];
 
   return (
-    <div className="min-h-screen bg-[#0f0e0e] pt-12 pb-24">
-      <div className="container mx-auto px-6 max-w-7xl">
+    <div className="min-h-screen bg-[#0f0e0e] pt-12 pb-24 relative overflow-hidden">
+      {/* Ambient Background */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-bronze-900/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[40vw] h-[40vw] bg-blue-900/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Breadcrumb Placeholder */}
         <div className="mb-8 text-sm text-white/40">
           Home / Machines / <span className="text-white">{product.name}</span>
