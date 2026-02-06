@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,14 +8,11 @@ import { ArrowRight, Play } from "lucide-react";
 
 export default function HeroSection() {
   const containerRef = useRef(null);
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
-  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
 
   return (
     <section
       ref={containerRef}
-      className="relative h-screen flex items-center justify-center bg-[#070707] z-40"
+      className="relative min-h-screen bg-[#070707] z-40 overflow-hidden"
     >
       {/* Dynamic Background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -24,12 +21,9 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 pointer-events-none mix-blend-overlay"></div>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-0 items-center min-h-screen pt-20 lg:pt-0">
         {/* Typography Content - Left Side */}
-        <motion.div
-          style={{ y: y1 }}
-          className="lg:col-span-7 flex flex-col justify-center"
-        >
+        <motion.div className="lg:col-span-6 flex flex-col justify-center z-20 pl-4 lg:pl-12 order-2 lg:order-1">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -96,28 +90,29 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Hero Image - Right Side - Breaking Grids */}
+        {/* Hero Image - Right Side */}
         <motion.div
-          style={{ y: y2 }}
-          className="lg:col-span-5 relative h-[50vh] lg:h-[80vh] flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="lg:col-span-6 relative h-[50vh] lg:h-full flex items-center justify-center lg:justify-end z-10 order-1 lg:order-2"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bronze-500/5 to-transparent rounded-full blur-3xl opacity-30 animate-pulse" />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="relative w-full h-full"
-          >
-            <Link href="/products/obsidian-project" className="cursor-none">
+          {/* Main static coffee machine */}
+          <div className="relative w-full h-full flex items-center justify-center lg:justify-end lg:pr-12">
+            {/* Backlight effect */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-bronze-500/20 rounded-full blur-[100px] z-0" />
+
+            <div className="relative w-full h-full max-h-[80vh] aspect-[4/5] lg:aspect-square z-10">
               <Image
                 src="/coffee_machine_hero.png"
-                alt="Obsidian Machine"
+                alt="Premium Espresso Machine"
                 fill
-                className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)] z-20 hover:scale-105 transition-transform duration-700"
+                className="object-contain"
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-            </Link>
-          </motion.div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
