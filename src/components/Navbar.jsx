@@ -80,11 +80,8 @@ export default function Navbar(props) {
       >
         <div className="mx-auto max-w-7xl backdrop-blur-md bg-black/80 border border-white/10 rounded-full px-6 py-3 flex items-center justify-between shadow-2xl relative z-50">
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-bold tracking-tighter text-white"
-          >
-            VELVET<span className="text-bronze-500">BREW</span>
+          <Link href="/" className="block">
+            <StaggeredLogo />
           </Link>
 
           {/* Desktop Links */}
@@ -437,5 +434,68 @@ function DropdownLink({ href, children }) {
     >
       {children}
     </Link>
+  );
+}
+
+function StaggeredLogo() {
+  const text = "VELVET BREW";
+  const letters = text.split("");
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { staggerChildren: 0.05, delayChildren: 0.1 * i },
+    }),
+    hover: {
+      transition: { staggerChildren: 0.03 },
+    },
+  };
+
+  const child = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: -20,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+    hover: {
+      y: -3,
+      color: "#D4A373", // bronze-500 equivalent hex
+      textShadow: "0px 0px 8px rgba(212,163,115,0.6)",
+      transition: {
+        type: "spring",
+        damping: 10,
+        stiffness: 200,
+      },
+    },
+  };
+
+  return (
+    <motion.div
+      className="flex overflow-hidden text-2xl font-bold tracking-tighter text-white cursor-pointer"
+      variants={container}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+    >
+      {letters.map((letter, index) => (
+        <motion.span variants={child} key={index} className="relative inline-block">
+          {letter === " " ? "\u00A0" : letter}
+        </motion.span>
+      ))}
+    </motion.div>
   );
 }
