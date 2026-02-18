@@ -161,7 +161,7 @@ export default function Navbar(props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#0f0f0f]/98 backdrop-blur-xl md:hidden flex flex-col pt-24 pb-10 px-6 overflow-y-auto"
+            className="fixed inset-0 z-[49] bg-[#0f0f0f]/98 backdrop-blur-xl md:hidden flex flex-col pt-24 pb-10 px-6 overflow-y-auto"
           >
             <motion.div
               className="flex flex-col gap-6 flex-1"
@@ -269,7 +269,7 @@ export default function Navbar(props) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-24 left-0 right-0 z-40 px-6"
+            className="fixed top-24 left-0 right-0 z-[49] px-6"
           >
             <div className="mx-auto max-w-2xl bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 shadow-2xl backdrop-blur-xl">
               <div className="relative mb-6">
@@ -368,6 +368,7 @@ function AuthButton({ mobile }) {
                 src={session.user.image}
                 alt={session.user.name}
                 fill
+                sizes="32px"
                 className="object-cover"
                 referrerPolicy="no-referrer"
               />

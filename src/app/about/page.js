@@ -10,7 +10,7 @@ export default function AboutPage() {
         <div className="min-h-screen bg-[#0f0e0e] text-white">
             {/* Hero */}
             <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
-                <Image src="/coffee_machine_hero.png" alt="Hero" fill className="object-cover opacity-40" />
+                <Image src="/coffee_machine_hero.png" alt="Hero" fill sizes="100vw" className="object-cover opacity-40" />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0f0e0e]/50 to-[#0f0e0e]" />
 
                 <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">

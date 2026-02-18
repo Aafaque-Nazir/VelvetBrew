@@ -15,7 +15,7 @@ export const authOptions = {
     signIn: '/login', 
   },
   session: {
-      strategy: "jwt", // We Keep JWT for easier session handling on client, but adapter persists user
+      strategy: "jwt",
   },
   callbacks: {
     async session({ session, token, user }) {
@@ -23,6 +23,19 @@ export const authOptions = {
             session.user.id = token.sub;
         }
       return session;
+    },
+  },
+  logger: {
+    error(code, metadata) {
+      // Suppress noisy client-side fetch errors in console
+      if (code === "CLIENT_FETCH_ERROR") return;
+      console.error("[NextAuth Error]", code, metadata);
+    },
+    warn(code) {
+      // Suppress warnings in dev
+    },
+    debug(code, metadata) {
+      // Silent debug
     },
   },
   secret: process.env.NEXTAUTH_SECRET || "fallback_secret_for_dev",

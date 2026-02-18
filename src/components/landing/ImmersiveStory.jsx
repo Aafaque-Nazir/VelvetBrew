@@ -44,6 +44,7 @@ export default function ImmersiveStory() {
             src="/coffee_machine_hero.png" // Reusing hero image for now, ideally a lifestyle shot
             alt="Art of Extraction"
             fill
+            sizes="(max-width: 768px) 100vw, 80vw"
             className="object-cover hover:scale-105 transition-transform duration-[2s]"
           />
 
