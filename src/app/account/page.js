@@ -190,7 +190,7 @@ function OrdersTab() {
                             </div>
                             <div className="text-right">
                                  <p className="text-bronze-500 font-bold mb-2">₹{order.total.toLocaleString('en-IN')}</p>
-                                 <Link href={`/account/invoice/${order.id}`}>
+                                 <Link href={`/account/invoice/${encodeURIComponent(order.id)}`}>
                                     <Button size="sm" variant="outline" className="h-8 text-xs">View Invoice</Button>
                                  </Link>
                             </div>
