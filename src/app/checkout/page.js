@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [placedOrderId, setPlacedOrderId] = useState(null);
   const router = useRouter();
 
   // Load Cashfree
@@ -23,19 +24,52 @@ export default function CheckoutPage() {
   }, []);
 
   if (step === 2) {
+      // Trigger redirect after 2.5s
+      useEffect(() => {
+          if (placedOrderId) {
+              const timer = setTimeout(() => {
+                  router.push(`/account/invoice/${encodeURIComponent(placedOrderId)}`);
+              }, 2500);
+              return () => clearTimeout(timer);
+          }
+      }, [placedOrderId, router]);
+
       return (
           <div className="min-h-screen bg-[#0f0e0e] flex items-center justify-center p-4">
               <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="bg-[#151515] p-12 rounded-3xl border border-white/10 text-center max-w-lg w-full"
+                initial={{ scale: 0.8, opacity: 0, y: 50 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="bg-[#151515] p-12 rounded-3xl border border-white/10 text-center max-w-lg w-full relative overflow-hidden"
               >
-                  <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Check className="text-green-500" size={40} />
-                  </div>
-                  <h1 className="text-3xl font-bold text-white mb-4">Order Confirmed!</h1>
-                  <p className="text-white/60 mb-8">Thank you for choosing VelvetBrew. Your order has been placed successfully.</p>
-                  <Button onClick={() => window.location.href = '/account'}>View Order in Account</Button>
+                  {/* Background Glow */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-green-500/10 blur-[100px] rounded-full pointer-events-none" />
+                  
+                  <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
+                      className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 relative z-10"
+                  >
+                      <Check className="text-green-500 relative z-10" size={48} strokeWidth={3} />
+                  </motion.div>
+                  <motion.h1 
+                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                     className="text-4xl font-bold text-white mb-4 relative z-10">
+                     Extraction Complete
+                  </motion.h1>
+                  <motion.p 
+                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+                     className="text-white/60 mb-8 max-w-sm mx-auto relative z-10">
+                     Your order has been perfectly brewed. Preparing your invoice...
+                  </motion.p>
+                  
+                  <motion.div 
+                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
+                     className="flex items-center justify-center gap-2 text-bronze-500 text-sm font-medium relative z-10">
+                     <div className="w-4 h-4 rounded-full border-2 border-bronze-500 border-t-transparent animate-spin" />
+                     Redirecting
+                  </motion.div>
               </motion.div>
           </div>
       )
@@ -76,7 +110,8 @@ export default function CheckoutPage() {
 
               if (res.ok) {
                   const data = await res.json();
-                  router.push(`/account/invoice/${encodeURIComponent(data.orderId)}`);
+                  setPlacedOrderId(data.orderId);
+                  setStep(2);
               } else {
                   throw new Error("Failed to place COD order");
               }
@@ -126,7 +161,8 @@ export default function CheckoutPage() {
                               body: JSON.stringify(orderData)
                           });
                           if(req.ok) {
-                             router.push(`/account/invoice/${encodeURIComponent(cf_order_id)}`);
+                             setPlacedOrderId(cf_order_id);
+                             setStep(2);
                           }
                       }
                   });
