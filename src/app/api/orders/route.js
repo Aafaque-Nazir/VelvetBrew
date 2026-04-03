@@ -43,8 +43,8 @@ export async function POST(request) {
         ...data,
         userEmail: session.user.email,
         createdAt: new Date(),
-        status: 'Processing',
-        id: `#VB-${Math.floor(1000 + Math.random() * 9000)}` // Simple ID generation
+        status: data.paymentMethod === 'Online' ? 'Paid' : 'Processing',
+        id: data.id || `VB-${Math.floor(1000 + Math.random() * 9000)}` // Removed '#' to simplify URLs
     };
 
     const result = await db.collection("orders").insertOne(newOrder);
