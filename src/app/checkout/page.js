@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { load } from '@cashfreepayments/cashfree-js';
 
 export default function CheckoutPage() {
-  const { cartItems, cartTotal } = useCart();
+  const { cartItems, cartTotal, clearCart } = useCart();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('COD');
@@ -23,17 +23,17 @@ export default function CheckoutPage() {
       }).then(cf => setCashfree(cf));
   }, []);
 
-  if (step === 2) {
-      // Trigger redirect after 2.5s
-      useEffect(() => {
-          if (placedOrderId) {
-              const timer = setTimeout(() => {
-                  router.push(`/account/invoice/${encodeURIComponent(placedOrderId)}`);
-              }, 2500);
-              return () => clearTimeout(timer);
-          }
-      }, [placedOrderId, router]);
+  // Trigger redirect after 2.5s
+  useEffect(() => {
+      if (step === 2 && placedOrderId) {
+          const timer = setTimeout(() => {
+              router.push(`/account/invoice/${encodeURIComponent(placedOrderId)}`);
+          }, 2500);
+          return () => clearTimeout(timer);
+      }
+  }, [step, placedOrderId, router]);
 
+  if (step === 2) {
       return (
           <div className="min-h-screen bg-[#0f0e0e] flex items-center justify-center p-4">
               <motion.div 
@@ -110,6 +110,7 @@ export default function CheckoutPage() {
 
               if (res.ok) {
                   const data = await res.json();
+                  clearCart();
                   setPlacedOrderId(data.orderId);
                   setStep(2);
               } else {
@@ -161,6 +162,7 @@ export default function CheckoutPage() {
                               body: JSON.stringify(orderData)
                           });
                           if(req.ok) {
+                             clearCart();
                              setPlacedOrderId(cf_order_id);
                              setStep(2);
                           }
